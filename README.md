@@ -1,0 +1,1 @@
+# zed_raport_analiza_danych
