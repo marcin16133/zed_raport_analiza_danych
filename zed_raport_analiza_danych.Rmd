@@ -49,10 +49,8 @@ set.seed(123)
 
 Dane rozdzielone są znakiem ";", dlatego użyję funkcji read.csv2 do wczytania danych. Kolumna title jest połączeniem kolumn pdb_code, res_name, res_id oraz chain_id, zatem możemy ją usunąć podczas wczytywania, aby uniknąć powtarzania informacji.
 
-```{r}
+```{r, cache=TRUE}
 all_data <- read.csv2("all_summary.csv", header = TRUE, dec=".", stringsAsFactors = FALSE) %>% select(-(blob_coverage:title))
-#all_data <- fread("all_summary.csv", sep=";", dec=".", header=TRUE, stringsAsFactors = FALSE) %>% select(-(blob_coverage:title))
-
 ```
 
 ###Przetwarzanie brakujących danych
