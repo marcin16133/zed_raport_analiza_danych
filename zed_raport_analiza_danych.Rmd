@@ -49,7 +49,7 @@ set.seed(123)
 
 Dane rozdzielone są znakiem ";", dlatego użyję funkcji read.csv2 do wczytania danych. Kolumna title jest połączeniem kolumn pdb_code, res_name, res_id oraz chain_id, zatem możemy ją usunąć podczas wczytywania, aby uniknąć powtarzania informacji.
 
-```{r, cache=TRUE}
+```{r}
 all_data <- read.csv2("all_summary.csv", header = TRUE, dec=".", stringsAsFactors = FALSE) %>% select(-(blob_coverage:title))
 ```
 
@@ -290,12 +290,7 @@ correlation <- cor(data_with_most_common_res_names %>% select_if(is.numeric), us
 correlation <- gather(as.data.frame(correlation)['local_res_atom_non_h_electron_sum',], 'column', 'correlation_ratio') %>% 
   filter(correlation_ratio > 0.8)
 
-
-
 electron_count_predict_data <- select(data_with_most_common_res_names, correlation$column)
-
-
-
 
 
 indexes <- createDataPartition(electron_count_predict_data$local_res_atom_non_h_electron_sum,
@@ -303,8 +298,10 @@ indexes <- createDataPartition(electron_count_predict_data$local_res_atom_non_h_
 
 training_data <- electron_count_predict_data[indexes,]
 testing_data <- electron_count_predict_data[-indexes,]
+```
 
 
+```{r}
 ctrl <- trainControl(
   method = "repeatedcv",
   number = 2,
@@ -316,6 +313,9 @@ fit <- train(local_res_atom_non_h_electron_sum ~ .,
              trControl = ctrl)
 fit
 
+```
+
+```{r}
 predicted_values <- predict(fit, newdata = testing_data)
 
 
@@ -333,12 +333,7 @@ correlation <- cor(data_with_most_common_res_names %>% select_if(is.numeric), us
 correlation <- gather(as.data.frame(correlation)['local_res_atom_non_h_count',], 'column', 'correlation_ratio') %>% 
   filter(correlation_ratio > 0.8)
 
-
-
-
 atom_count_predict_data <- select(data_with_most_common_res_names, correlation$column)
-
-
 
 
 indexes <- createDataPartition(atom_count_predict_data$local_res_atom_non_h_count,
@@ -385,8 +380,8 @@ indexes <- createDataPartition(res_name_classification_data$res_name,
 training_data <- res_name_classification_data[indexes,]
 testing_data <- res_name_classification_data[-indexes,]
 
-training_data
-testing_data
+
+
 
 ctrl <- trainControl(
   method = "repeatedcv",
@@ -400,9 +395,8 @@ fit <- train(res_name ~ .,
              ntree=10)
 fit
 
-#predicted_classes <- predict(fit, newdata = testing_data)
+predicted_classes <- predict(fit, newdata = testing_data)
 
-#predicted_classes
 
-#confusionMatrix(data = predicted_classes, testing$res_name)
+confusionMatrix(data = predicted_classes, testing$res_name)
 ``` 
