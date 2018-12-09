@@ -32,6 +32,9 @@ library(DT)
 library(summarytools)
 library(gifski)
 library(png)
+library(data.table)
+library(parallel)
+library(doMC)
 ```
 
 
@@ -50,7 +53,7 @@ set.seed(123)
 Dane rozdzielone są znakiem ";", dlatego użyję funkcji read.csv2 do wczytania danych. Kolumna title jest połączeniem kolumn pdb_code, res_name, res_id oraz chain_id, zatem możemy ją usunąć podczas wczytywania, aby uniknąć powtarzania informacji.
 
 ```{r}
-all_data <- read.csv2("all_summary.csv", header = TRUE, dec=".", stringsAsFactors = FALSE) %>% select(-(blob_coverage:title))
+all_data <- fread("all_summary.csv", header = TRUE, dec=".", stringsAsFactors = FALSE) %>% select(-(blob_coverage:title))
 ```
 
 ###Przetwarzanie brakujących danych
@@ -285,6 +288,9 @@ animate(p, nframes = 300, fps = 30, width = 600, height = 600,
 
 
 ```{r}
+numCores <- detectCores()
+registerDoMc(cores = numCores)
+
 correlation <- cor(data_with_most_common_res_names %>% select_if(is.numeric), use="complete.obs", method="spearman")
 
 correlation <- gather(as.data.frame(correlation)['local_res_atom_non_h_electron_sum',], 'column', 'correlation_ratio') %>% 
