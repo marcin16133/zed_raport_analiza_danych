@@ -17,7 +17,7 @@ date: '10 grudzień 2018'
 
 ##Podsumowanie analizy
 
-Dane pochodzą z Protein Data Bank, zawierają informację o ligandach. W analizie pominęliśmy kolumnę title, która zawierała powtórzone dane z innych kolumn oraz kolumnę weight_col, która składała się z wartości pustych. Dodatkowo w niektórych wierszach brakowało informacji odnośnie jednego z progów odcięcia. Predykcja ilości atomów oraz elektronów powiodła się z dość dużą trafnością co jest pokazanego w wynikach. 
+Dane pochodzą z Protein Data Bank, zawierają informację o ligandach. W analizie pominęliśmy kolumnę title, która zawierała powtórzone dane z innych kolumn oraz kolumnę weight_col, która składała się z wartości pustych. Dodatkowo w niektórych wierszach brakowało informacji odnośnie jednego z progów odcięcia. 
 
 ##Wykorzystane biblioteki
 
@@ -177,14 +177,14 @@ Niezgodność wyrażona jest procentach i oznacza o ile procent niezgodna jest l
 
 
 <!--html_preserve--><div id="htmlwidget-49c968e2f00b87e48d74" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-49c968e2f00b87e48d74">{"x":{"style":"bootstrap","filter":"top","filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"3.92920466058764\" data-max=\"16.71\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","extensions":["Buttons"],"data":[["1PE","MLY","SEP","PG4","MAN","NAG","CLA","PLP","PGE","COA"],[16.71,10.935534591195,9.09731113956466,7.99353161265775,7.2349014128241,6.53263637582094,5.5050362950875,5.39990421455939,4.02994011976048,3.92920466058764]],"container":"<table class=\"table table-striped table-hover\">\n  <thead>\n    <tr>\n      <th>res_name<\/th>\n      <th>mean_incompatibility<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"Bfrtip","buttons":["copy","csv","excel","pdf","print"],"columnDefs":[{"className":"dt-right","targets":1}],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data) {\n}"}},"evals":["options.rowCallback"],"jsHooks":[]}</script><!--/html_preserve-->
+<script type="application/json" data-for="htmlwidget-49c968e2f00b87e48d74">{"x":{"style":"bootstrap","filter":"top","filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"3.93\" data-max=\"16.71\" data-scale=\"2\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","extensions":["Buttons"],"data":[["1PE","MLY","SEP","PG4","MAN","NAG","CLA","PLP","PGE","COA"],[16.71,10.94,9.1,7.99,7.23,6.53,5.51,5.4,4.03,3.93]],"container":"<table class=\"table table-striped table-hover\">\n  <thead>\n    <tr>\n      <th>res_name<\/th>\n      <th>mean_incompatibility<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"Bfrtip","buttons":["copy","csv","excel","pdf","print"],"columnDefs":[{"className":"dt-right","targets":1}],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data) {\n}"}},"evals":["options.rowCallback"],"jsHooks":[]}</script><!--/html_preserve-->
 
 ###Niezgodność liczby elektronów
 
 Niezgodność wyrażona jest procentach i oznacza o ile procent niezgodna jest liczba elektronów w porównaniu do ilości słownikowej.
 
 <!--html_preserve--><div id="htmlwidget-f474ad921ae63e0a53f4" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-f474ad921ae63e0a53f4">{"x":{"style":"bootstrap","filter":"top","filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"3.89528151686206\" data-max=\"16.882962962963\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","extensions":["Buttons"],"data":[["1PE","MLY","SEP","MAN","PG4","NAG","PLP","CLA","PGE","COA"],[16.882962962963,12.676987582648,9.14772727272727,8.26845875751325,7.98827100352245,7.60858297017197,5.83479446717319,5.2766428176352,3.96442409299049,3.89528151686206]],"container":"<table class=\"table table-striped table-hover\">\n  <thead>\n    <tr>\n      <th>res_name<\/th>\n      <th>mean_incompatibility<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"Bfrtip","buttons":["copy","csv","excel","pdf","print"],"columnDefs":[{"className":"dt-right","targets":1}],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data) {\n}"}},"evals":["options.rowCallback"],"jsHooks":[]}</script><!--/html_preserve-->
+<script type="application/json" data-for="htmlwidget-f474ad921ae63e0a53f4">{"x":{"style":"bootstrap","filter":"top","filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"3.9\" data-max=\"16.88\" data-scale=\"2\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","extensions":["Buttons"],"data":[["1PE","MLY","SEP","MAN","PG4","NAG","PLP","CLA","PGE","COA"],[16.88,12.68,9.15,8.27,7.99,7.61,5.83,5.28,3.96,3.9]],"container":"<table class=\"table table-striped table-hover\">\n  <thead>\n    <tr>\n      <th>res_name<\/th>\n      <th>mean_incompatibility<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"Bfrtip","buttons":["copy","csv","excel","pdf","print"],"columnDefs":[{"className":"dt-right","targets":1}],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data) {\n}"}},"evals":["options.rowCallback"],"jsHooks":[]}</script><!--/html_preserve-->
 
 ###Rozkład wartości kolumn rozpoczynających się od "part_01"
 
@@ -344,8 +344,9 @@ ctrl <- trainControl(
 fit <- train(res_name ~ .,
              data = training_data,
              method = "rf",
+             preProc = c("center", "scale"),
              trControl = ctrl,
-             ntree=12)
+             ntree=5)
 fit
 ```
 
@@ -356,18 +357,18 @@ fit
 ##   324 predictor
 ##     3 classes: 'EDO', 'GOL', 'SO4' 
 ## 
-## No pre-processing
+## Pre-processing: centered (324), scaled (324) 
 ## Resampling: Cross-Validated (2 fold, repeated 5 times) 
 ## Summary of sample sizes: 42121, 42121, 42121, 42121, 42120, 42122, ... 
 ## Resampling results across tuning parameters:
 ## 
 ##   mtry  Accuracy   Kappa    
-##     2   0.6844662  0.5059405
-##   163   0.6915933  0.5174719
-##   324   0.6916218  0.5175101
+##     2   0.6608271  0.4708893
+##   163   0.6692695  0.4845099
+##   324   0.6686237  0.4833069
 ## 
 ## Accuracy was used to select the optimal model using the largest value.
-## The final value used for the model was mtry = 324.
+## The final value used for the model was mtry = 163.
 ```
 
 ```r
@@ -382,29 +383,29 @@ confusionMatrix(data = predicted_classes, testing_data$res_name)
 ## 
 ##           Reference
 ## Prediction   EDO   GOL   SO4
-##        EDO  4592  2818   901
-##        GOL  2796  6667  1571
-##        SO4  1009  1699 14049
+##        EDO  4472  3051  1122
+##        GOL  2913  6396  1845
+##        SO4  1012  1737 13554
 ## 
 ## Overall Statistics
 ##                                           
-##                Accuracy : 0.701           
-##                  95% CI : (0.6963, 0.7057)
+##                Accuracy : 0.6765          
+##                  95% CI : (0.6716, 0.6813)
 ##     No Information Rate : 0.4576          
-##     P-Value [Acc > NIR] : < 2e-16         
+##     P-Value [Acc > NIR] : < 2.2e-16       
 ##                                           
-##                   Kappa : 0.5324          
-##  Mcnemar's Test P-Value : 0.01068         
+##                   Kappa : 0.496           
+##  Mcnemar's Test P-Value : 0.006985        
 ## 
 ## Statistics by Class:
 ## 
 ##                      Class: EDO Class: GOL Class: SO4
-## Sensitivity              0.5469     0.5961     0.8504
-## Specificity              0.8658     0.8247     0.8617
-## Pos Pred Value           0.5525     0.6042     0.8384
-## Neg Pred Value           0.8631     0.8198     0.8722
+## Sensitivity              0.5326     0.5719     0.8204
+## Specificity              0.8494     0.8091     0.8596
+## Pos Pred Value           0.5173     0.5734     0.8314
+## Neg Pred Value           0.8570     0.8081     0.8501
 ## Prevalence               0.2326     0.3098     0.4576
-## Detection Rate           0.1272     0.1847     0.3891
-## Detection Prevalence     0.2302     0.3056     0.4642
-## Balanced Accuracy        0.7063     0.7104     0.8560
+## Detection Rate           0.1239     0.1772     0.3754
+## Detection Prevalence     0.2395     0.3090     0.4516
+## Balanced Accuracy        0.6910     0.6905     0.8400
 ```
