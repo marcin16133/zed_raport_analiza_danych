@@ -363,12 +363,12 @@ fit
 ## Resampling results across tuning parameters:
 ## 
 ##   mtry  Accuracy   Kappa    
-##     2   0.6608271  0.4708893
-##   163   0.6692695  0.4845099
-##   324   0.6686237  0.4833069
+##     2   0.6606135  0.4705570
+##   163   0.6688754  0.4839528
+##   324   0.6689134  0.4837200
 ## 
 ## Accuracy was used to select the optimal model using the largest value.
-## The final value used for the model was mtry = 163.
+## The final value used for the model was mtry = 324.
 ```
 
 ```r
@@ -383,29 +383,29 @@ confusionMatrix(data = predicted_classes, testing_data$res_name)
 ## 
 ##           Reference
 ## Prediction   EDO   GOL   SO4
-##        EDO  4472  3051  1122
-##        GOL  2913  6396  1845
-##        SO4  1012  1737 13554
+##        EDO  4463  3064  1116
+##        GOL  2882  6350  1800
+##        SO4  1052  1770 13605
 ## 
 ## Overall Statistics
 ##                                           
-##                Accuracy : 0.6765          
-##                  95% CI : (0.6716, 0.6813)
+##                Accuracy : 0.6764          
+##                  95% CI : (0.6715, 0.6812)
 ##     No Information Rate : 0.4576          
-##     P-Value [Acc > NIR] : < 2.2e-16       
+##     P-Value [Acc > NIR] : < 2e-16         
 ##                                           
-##                   Kappa : 0.496           
-##  Mcnemar's Test P-Value : 0.006985        
+##                   Kappa : 0.4954          
+##  Mcnemar's Test P-Value : 0.05235         
 ## 
 ## Statistics by Class:
 ## 
 ##                      Class: EDO Class: GOL Class: SO4
-## Sensitivity              0.5326     0.5719     0.8204
-## Specificity              0.8494     0.8091     0.8596
-## Pos Pred Value           0.5173     0.5734     0.8314
-## Neg Pred Value           0.8570     0.8081     0.8501
+## Sensitivity              0.5315     0.5678     0.8235
+## Specificity              0.8491     0.8121     0.8559
+## Pos Pred Value           0.5164     0.5756     0.8282
+## Neg Pred Value           0.8567     0.8072     0.8518
 ## Prevalence               0.2326     0.3098     0.4576
-## Detection Rate           0.1239     0.1772     0.3754
-## Detection Prevalence     0.2395     0.3090     0.4516
-## Balanced Accuracy        0.6910     0.6905     0.8400
+## Detection Rate           0.1236     0.1759     0.3768
+## Detection Prevalence     0.2394     0.3056     0.4550
+## Balanced Accuracy        0.6903     0.6899     0.8397
 ```
