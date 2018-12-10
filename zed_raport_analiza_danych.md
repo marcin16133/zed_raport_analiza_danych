@@ -10,7 +10,7 @@ output:
     fig_width: 10
     df_print: paged
     rows.print: 10
-date: '09 grudzień 2018'
+date: '10 grudzień 2018'
 ---
 
 
@@ -172,12 +172,16 @@ correlation <- correlation %>% filter((first_column %in% top_correlated$first_co
 
 ###Niezgodność liczby atomów
 
+Niezgodność wyrażona jest procentach i oznacza o ile procent niezgodna jest liczba atomów w porównaniu do ilości słownikowej.
+
 
 
 <!--html_preserve--><div id="htmlwidget-49c968e2f00b87e48d74" style="width:100%;height:auto;" class="datatables html-widget"></div>
 <script type="application/json" data-for="htmlwidget-49c968e2f00b87e48d74">{"x":{"style":"bootstrap","filter":"top","filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"3.92920466058764\" data-max=\"16.71\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","extensions":["Buttons"],"data":[["1PE","MLY","SEP","PG4","MAN","NAG","CLA","PLP","PGE","COA"],[16.71,10.935534591195,9.09731113956466,7.99353161265775,7.2349014128241,6.53263637582094,5.5050362950875,5.39990421455939,4.02994011976048,3.92920466058764]],"container":"<table class=\"table table-striped table-hover\">\n  <thead>\n    <tr>\n      <th>res_name<\/th>\n      <th>mean_incompatibility<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"Bfrtip","buttons":["copy","csv","excel","pdf","print"],"columnDefs":[{"className":"dt-right","targets":1}],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data) {\n}"}},"evals":["options.rowCallback"],"jsHooks":[]}</script><!--/html_preserve-->
 
 ###Niezgodność liczby elektronów
+
+Niezgodność wyrażona jest procentach i oznacza o ile procent niezgodna jest liczba elektronów w porównaniu do ilości słownikowej.
 
 <!--html_preserve--><div id="htmlwidget-f474ad921ae63e0a53f4" style="width:100%;height:auto;" class="datatables html-widget"></div>
 <script type="application/json" data-for="htmlwidget-f474ad921ae63e0a53f4">{"x":{"style":"bootstrap","filter":"top","filterHTML":"<tr>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"3.89528151686206\" data-max=\"16.882962962963\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","extensions":["Buttons"],"data":[["1PE","MLY","SEP","MAN","PG4","NAG","PLP","CLA","PGE","COA"],[16.882962962963,12.676987582648,9.14772727272727,8.26845875751325,7.98827100352245,7.60858297017197,5.83479446717319,5.2766428176352,3.96442409299049,3.89528151686206]],"container":"<table class=\"table table-striped table-hover\">\n  <thead>\n    <tr>\n      <th>res_name<\/th>\n      <th>mean_incompatibility<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"Bfrtip","buttons":["copy","csv","excel","pdf","print"],"columnDefs":[{"className":"dt-right","targets":1}],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true,"rowCallback":"function(row, data) {\n}"}},"evals":["options.rowCallback"],"jsHooks":[]}</script><!--/html_preserve-->
@@ -188,7 +192,7 @@ correlation <- correlation %>% filter((first_column %in% top_correlated$first_co
 
 ###Animacja
 
-Wykres przedstawia ilości segmentów maski kształtu oraz maski gęstości elektronowej dla każdego progu odcięcia intensywności na podstawie danych z trzema najpopularniejszymi nazwami zasobu (res_name). Skala osi pionowej jest logarytmiczna, ponieważ różnice w wartościach są dość duże.
+Wykres przedstawia ilości segmentów maski kształtu oraz maski gęstości elektronowej dla każdego progu odcięcia intensywności na podstawie danych z 30 najbardziej zmiennymi wierszami (tj. ilości te najbardziej różnią się względem progu odcięcia). Skala osi pionowej jest logarytmiczna, ponieważ różnice w wartościach są dość duże.
 
 ![](zed_raport_analiza_danych_files/figure-html/unnamed-chunk-20-1.gif)<!-- -->
 
@@ -233,11 +237,11 @@ fit
 ## 
 ## No pre-processing
 ## Resampling: Cross-Validated (2 fold, repeated 5 times) 
-## Summary of sample sizes: 122520, 122522, 122521, 122521, 122521, 122521, ... 
+## Summary of sample sizes: 122521, 122521, 122521, 122521, 122520, 122522, ... 
 ## Resampling results:
 ## 
-##   RMSE     Rsquared  MAE      
-##   0.46865  0.999972  0.1390262
+##   RMSE       Rsquared   MAE      
+##   0.4865977  0.9999701  0.1445108
 ## 
 ## Tuning parameter 'intercept' was held constant at a value of TRUE
 ```
@@ -287,11 +291,11 @@ fit
 ## 
 ## No pre-processing
 ## Resampling: Cross-Validated (2 fold, repeated 5 times) 
-## Summary of sample sizes: 122521, 122521, 122522, 122520, 122521, 122521, ... 
+## Summary of sample sizes: 122521, 122521, 122521, 122521, 122521, 122521, ... 
 ## Resampling results:
 ## 
-##   RMSE        Rsquared   MAE       
-##   0.03612161  0.9999924  0.00517815
+##   RMSE        Rsquared   MAE        
+##   0.03559366  0.9999926  0.005705987
 ## 
 ## Tuning parameter 'intercept' was held constant at a value of TRUE
 ```
@@ -308,8 +312,8 @@ r2_atoms <- R2(testing_data$local_res_atom_non_h_count, predicted_values)
 
 |Predykcja|RMSE|R^2|
 |---|---|---|---|---|
-|Ilości atomów|0.0345164|0.9999931|
-|Ilości elektronów|0.5205734|0.9999658|
+|Ilości atomów|0.0357283|0.9999926|
+|Ilości elektronów|0.4798448|0.9999705|
 
 ##Klasyfikacja 
 
@@ -341,7 +345,7 @@ fit <- train(res_name ~ .,
              data = training_data,
              method = "rf",
              trControl = ctrl,
-             ntree=7)
+             ntree=12)
 fit
 ```
 
@@ -354,16 +358,16 @@ fit
 ## 
 ## No pre-processing
 ## Resampling: Cross-Validated (2 fold, repeated 5 times) 
-## Summary of sample sizes: 42122, 42120, 42121, 42121, 42120, 42122, ... 
+## Summary of sample sizes: 42121, 42121, 42121, 42121, 42120, 42122, ... 
 ## Resampling results across tuning parameters:
 ## 
 ##   mtry  Accuracy   Kappa    
-##     2   0.6729873  0.4886008
-##   163   0.6799530  0.5000081
-##   324   0.6795162  0.4993857
+##     2   0.6844662  0.5059405
+##   163   0.6915933  0.5174719
+##   324   0.6916218  0.5175101
 ## 
 ## Accuracy was used to select the optimal model using the largest value.
-## The final value used for the model was mtry = 163.
+## The final value used for the model was mtry = 324.
 ```
 
 ```r
@@ -378,29 +382,29 @@ confusionMatrix(data = predicted_classes, testing_data$res_name)
 ## 
 ##           Reference
 ## Prediction   EDO   GOL   SO4
-##        EDO  4445  2868  1030
-##        GOL  2909  6544  1667
-##        SO4  1043  1772 13824
+##        EDO  4592  2818   901
+##        GOL  2796  6667  1571
+##        SO4  1009  1699 14049
 ## 
 ## Overall Statistics
 ##                                           
-##                Accuracy : 0.6873          
-##                  95% CI : (0.6825, 0.6921)
+##                Accuracy : 0.701           
+##                  95% CI : (0.6963, 0.7057)
 ##     No Information Rate : 0.4576          
-##     P-Value [Acc > NIR] : <2e-16          
+##     P-Value [Acc > NIR] : < 2e-16         
 ##                                           
-##                   Kappa : 0.5113          
-##  Mcnemar's Test P-Value : 0.3107          
+##                   Kappa : 0.5324          
+##  Mcnemar's Test P-Value : 0.01068         
 ## 
 ## Statistics by Class:
 ## 
 ##                      Class: EDO Class: GOL Class: SO4
-## Sensitivity              0.5294     0.5851     0.8368
-## Specificity              0.8593     0.8164     0.8562
-## Pos Pred Value           0.5328     0.5885     0.8308
-## Neg Pred Value           0.8576     0.8143     0.8614
+## Sensitivity              0.5469     0.5961     0.8504
+## Specificity              0.8658     0.8247     0.8617
+## Pos Pred Value           0.5525     0.6042     0.8384
+## Neg Pred Value           0.8631     0.8198     0.8722
 ## Prevalence               0.2326     0.3098     0.4576
-## Detection Rate           0.1231     0.1813     0.3829
-## Detection Prevalence     0.2311     0.3080     0.4609
-## Balanced Accuracy        0.6943     0.7007     0.8465
+## Detection Rate           0.1272     0.1847     0.3891
+## Detection Prevalence     0.2302     0.3056     0.4642
+## Balanced Accuracy        0.7063     0.7104     0.8560
 ```
