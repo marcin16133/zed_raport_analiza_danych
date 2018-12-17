@@ -1,0 +1,409 @@
+---
+title: "ZED Raport z analizy danych"
+author: "Marcin Burczyk"
+output: 
+  html_document:
+    keep_md: yes
+    toc: yes
+    toc_float: yes
+    fig_height: 8
+    fig_width: 10
+    df_print: paged
+    rows.print: 10
+date: '`r format(Sys.Date(), "%d %B %Y")`'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Podsumowanie analizy
+
+Dane pochodzą z Protein Data Bank, zawierają informację o ligandach. W analizie pominęliśmy kolumnę title, która zawierała powtórzone dane z innych kolumn oraz kolumnę weight_col, która składała się z wartości pustych. Dodatkowo w niektórych wierszach brakowało informacji odnośnie jednego z progów odcięcia. 
+
+##Wykorzystane biblioteki
+
+```{r, message=FALSE}
+library(dplyr)
+library(ggplot2)
+library(ggforce)
+library(gganimate) #devtools::install_github('thomasp85/gganimate')
+library(tidyr)
+library(caret)
+library(DT)
+library(summarytools)
+library(gifski)
+library(png)
+library(data.table)
+```
+
+
+##Dane
+
+###Powtarzalność wyników
+
+Aby zapewnić powtarzalność wyników ustawiamy stan losowego generatora liczb.
+
+```{r}
+set.seed(123)
+```
+
+###Wczytywanie danych
+
+Do wczytania danych używamy funkci "fread", aby zapewnić szybsze wczytanie danych. Kolumna title jest połączeniem kolumn pdb_code, res_name, res_id oraz chain_id, zatem możemy ją usunąć podczas wczytywania, aby uniknąć powtarzania informacji.
+
+```{r}
+all_data <- fread("all_summary.csv", header = TRUE, dec=".", stringsAsFactors = FALSE) %>% select(-(blob_coverage:title))
+```
+
+###Przetwarzanie brakujących danych
+
+Wiersze, które w kolumnie "res_name" zawierają niepożądaną przez nas wartość zostają usunięte.
+
+```{r}
+cleaned_data <- all_data %>% filter(!res_name %in% c('UNK', 'UNX', 'UNL', 'DUM', 'N', 'BLOB', 'ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HIS', 'ILE', 'LEU', 'LYS', 'MET', 'MSE', 'PHE', 'PRO', 'SEC', 'SER', 'THR', 'TRP', 'TYR', 'VAL', 'DA', 'DG', 'DT', 'DC', 'DU', 'A', 'G', 'T', 'C', 'U', 'HOH', 'H20', 'WAT')) 
+```
+
+W zbiorze danych występuje kolumna, która równa jest NA we wszystkich wierszach.
+
+```{r}
+rows_without_na_in_weight_co = filter(cleaned_data, !is.na(weight_col))
+dim(rows_without_na_in_weight_co)[1]
+```
+
+Jak widać brak wierszy, których kolumna weight_col nie ma wartości pustej, dlatego możemy ją wykluczyć z dalszej analizy. Usuwamy także wiersze zawierające wartość pustą.
+
+```{r}
+cleaned_data_without_empty_col <- select(cleaned_data, -weight_col)
+
+cleaned_data_without_empty_col <- cleaned_data_without_empty_col[complete.cases(cleaned_data_without_empty_col),]
+
+```
+
+###Rozmiar danych oraz ich statystyki
+
+Zebrane dane zawierają… `r dim(cleaned_data_without_empty_col)[2]` kolumn oraz `r dim(cleaned_data_without_empty_col)[1]` wierszy.
+Dane są typu `r unique(sapply(cleaned_data_without_empty_col, class))`. Większość kolumn jest numeryczna. Ich podstawowe statystyki prezentują się tak:
+
+```{r, echo=FALSE}
+descr(cleaned_data_without_empty_col, transpose = TRUE, style = 'rmarkdown', stats = c("mean", "sd", "max", "min", "pct.valid"))
+```
+
+Natomiast pozostałe kolumny są następujące:
+
+```{r, echo=FALSE}
+knitr::kable(summary(cleaned_data_without_empty_col %>% select_if(is.character)))
+```
+
+##Analiza
+
+###Ograniczenie danych
+
+Naszą analizę ograniczymy do 50 najpopularniejszych wartości kolumny res_name.
+
+```{r}
+get_top_n_res_names <- function(input_data, top_count) {
+input_data %>% 
+  select(res_name) %>% 
+  group_by(res_name) %>% 
+  count() %>% 
+  arrange(desc(n)) %>%
+  head(top_count)
+}
+
+top_50_res_name <- get_top_n_res_names(cleaned_data_without_empty_col, 50)
+
+data_with_most_common_res_names <- cleaned_data_without_empty_col %>% filter(res_name %in% top_50_res_name$res_name)
+```
+
+Rozkład jej wartości prezentuje się następująco
+
+```{r, echo=FALSE, message=FALSE}
+ggplot(top_50_res_name, aes(x=reorder(res_name, n), y=n, fill=reorder(res_name, n))) + 
+  geom_bar(stat='identity', width = 0.8) + 
+  theme_minimal() +
+  ylab("res_name") +
+  coord_flip()
+```
+
+###Korelacja
+
+W celu sprawdzenia korelacji użyjemy korelacji Rho Spearmana, ponieważ rozkład wartości przynajmniej jednej kolumny nie jest rozkładem normalnym
+
+```{r, message=FALSE, warning=FALSE, cache=TRUE}
+correlation <- as.data.frame(as.table(cor(data_with_most_common_res_names %>% select_if(is.numeric), use="complete.obs", method="spearman")))
+```
+
+Usuniemy teraz korelacje kolumn samych ze sobą
+
+```{r}
+correlation <- correlation %>% 
+  rename(first_column = Var1, second_column = Var2, freq = Freq) %>%
+  filter(first_column != second_column)
+```
+
+Grupujemy po pierwszej kolumnie oraz dla każdej wartości obliczamy maksymalną wartośi. Następnie wyznaczmy 10 kolumn z największą korelacją oraz filtrujemy dane do wizualizacji
+
+```{r}
+top_correlated <- correlation %>% 
+  group_by(first_column) %>% 
+  summarise(max=max(freq, na.rm = TRUE)) %>%
+  arrange(desc(max)) %>%
+  head(10)
+
+correlation <- correlation %>% filter((first_column %in% top_correlated$first_column & second_column %in% top_correlated$first_column))
+```
+
+```{r, message=FALSE, echo=FALSE}
+ggplot(data = correlation, aes(x=first_column, y=second_column, fill=freq)) + 
+  geom_tile() +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  ylab("") + 
+  xlab("")
+
+```
+
+###Rozkład wartości atomów oraz eleketronów
+
+```{r, echo=FALSE}
+ggplot(data_with_most_common_res_names, aes(x=local_res_atom_non_h_count)) + 
+  geom_histogram(bins = 30, fill="blue") + 
+  ggtitle('Rozkład wartości atomów') +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_fill_brewer() +
+  theme_minimal()
+
+
+ggplot(data_with_most_common_res_names, aes(x=local_res_atom_non_h_electron_sum)) + 
+  geom_histogram(bins = 30, fill="blue") + 
+  ggtitle('Rozkład wartości elektronów') +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme_minimal()
+
+```
+
+###Niezgodność liczby atomów
+
+Niezgodność wyrażona jest procentach i oznacza o ile procent niezgodna jest liczba atomów w porównaniu do ilości słownikowej.
+
+```{r, echo=FALSE}
+prettyTable <- function(table_df, round_columns=numeric(), round_digits=2) {
+    DT::datatable(table_df, style="bootstrap", filter = "top", rownames = FALSE, extensions = "Buttons", options = list(dom = 'Bfrtip', buttons = c('copy', 'csv', 'excel', 'pdf', 'print'))) %>%
+    formatRound(round_columns, round_digits)
+}
+```
+
+```{r, echo=FALSE}
+protons_count_incompatibility <- data_with_most_common_res_names %>% 
+  group_by(res_name) %>%
+  mutate(incompatibility=abs(local_res_atom_non_h_count - dict_atom_non_h_count) * 100 / dict_atom_non_h_count) %>%
+  summarize(mean_incompatibility=round(mean(incompatibility), 2)) %>%
+  arrange(desc(mean_incompatibility)) %>%
+  head(10)
+  
+prettyTable(protons_count_incompatibility)
+
+```
+
+###Niezgodność liczby elektronów
+
+Niezgodność wyrażona jest procentach i oznacza o ile procent niezgodna jest liczba elektronów w porównaniu do ilości słownikowej.
+
+```{r, echo=FALSE}
+electrons_count_incompatibility <- data_with_most_common_res_names %>% 
+  group_by(res_name) %>%
+  mutate(incompatibility=abs(local_res_atom_non_h_electron_sum - dict_atom_non_h_electron_sum) * 100 / dict_atom_non_h_electron_sum) %>%
+  summarize(mean_incompatibility=round(mean(incompatibility), 2)) %>%
+  arrange(desc(mean_incompatibility)) %>%
+  head(10)
+  
+prettyTable(electrons_count_incompatibility)
+
+```
+
+###Rozkład wartości kolumn rozpoczynających się od "part_01"
+
+```{r, echo=FALSE, message=FALSE, cache=TRUE}
+part_01_all <- data_with_most_common_res_names %>% select(contains('part_01'))
+
+part_01_all <- gather(part_01_all, 'key', 'value')
+
+n_pages <- ceiling(
+  length(levels(factor(part_01_all$key))) / 9
+)
+
+continuous_means <- part_01_all %>% group_by(key) %>% summarise(mean_value=round(mean(value), 3))
+
+for (i in seq_len(n_pages)) {
+  print(ggplot(part_01_all, aes(value, fill=1)) + 
+    geom_histogram(show.legend=FALSE, bins=20) + 
+    geom_vline(data=continuous_means, aes(xintercept=mean_value), linetype="dashed") +
+    geom_text(data = continuous_means, aes(label = mean_value, y=1, x=mean_value, colour="red"), show.legend=FALSE) +
+    facet_wrap_paginate(~ key, ncol = 3, nrow = 3, scales='free', page = i) + 
+    theme_bw())
+}
+```
+
+###Animacja
+
+Wykres przedstawia ilości segmentów maski kształtu oraz maski gęstości elektronowej dla każdego progu odcięcia intensywności na podstawie danych z 30 najbardziej zmiennymi wierszami (tj. ilości te najbardziej różnią się względem progu odcięcia). Skala osi pionowej jest logarytmiczna, ponieważ różnice w wartościach są dość duże.
+
+```{r, echo = FALSE, message=FALSE, warning=FALSE, cache=TRUE}
+
+animation_data <- data_with_most_common_res_names %>% 
+  mutate(difference=
+    ((abs(part_00_shape_segments_count - part_01_shape_segments_count) + abs(part_01_shape_segments_count - part_02_shape_segments_count)) / part_00_shape_segments_count) +
+    ((abs(part_00_density_segments_count - part_01_density_segments_count) + abs(part_01_density_segments_count - part_02_density_segments_count)) / part_00_density_segments_count)
+  ) %>%
+  arrange(desc(difference)) %>%
+  head(30)
+
+animation_data <- animation_data %>% 
+  select(res_name,
+    part_00_shape_segments_count, part_00_density_segments_count,
+    part_01_shape_segments_count, part_01_density_segments_count,
+    part_02_shape_segments_count, part_02_density_segments_count)
+
+animation_data <-  gather(animation_data, 'key', 'count', -res_name)
+
+
+animation_data <- animation_data[complete.cases(animation_data), ]
+
+animation_data <- animation_data %>% separate(key, into = c("name", "part_number", "type")) %>% mutate(part_number=as.integer(part_number) + 1)
+
+
+
+p <- ggplot(animation_data, aes(type, count, colour=res_name, size=5)) +
+  geom_point(position="jitter") +
+  transition_time(part_number) +
+  scale_y_log10() +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  labs(title="part_0{round(frame_time)}") +
+  guides(size=FALSE)
+
+animate(p, nframes = 90, fps = 10, width = 600, height = 600,
+        renderer = gifski_renderer(loop = T))
+
+```
+
+
+##Regresja
+
+Kolumny do regresji zostaną wybrane na podstawie współczynnika korelacji Rho Spearmana. Następnie dane zostaną podzielone na zbiór treningowy oraz testowy w stosunku 70:30. Model zostanie oceniony na podstawie 5-krotnej, podwójnej oceny krzyżowej. Dodatkowo dokonamy predykcji na danych testowych oraz obliczymy miary R^2 oraz RMSE.
+
+###Wyznaczanie liczby elektronów 
+
+```{r, message=FALSE, warning=FALSE, cache=TRUE}
+
+correlation <- cor(data_with_most_common_res_names %>% select_if(is.numeric), use="complete.obs", method="spearman")
+
+correlation <- gather(as.data.frame(correlation)['local_res_atom_non_h_electron_sum',], 'column', 'correlation_ratio') %>% 
+  filter(correlation_ratio > 0.8)
+
+electron_count_predict_data <- select(data_with_most_common_res_names, correlation$column)
+
+indexes <- createDataPartition(electron_count_predict_data$local_res_atom_non_h_electron_sum,p=0.7, list=F)
+
+training_data <- electron_count_predict_data[indexes,]
+testing_data <- electron_count_predict_data[-indexes,]
+
+ctrl <- trainControl(
+  method = "repeatedcv",
+  number = 2,
+  repeats = 5)
+
+fit <- train(local_res_atom_non_h_electron_sum ~ .,
+             data = training_data,
+             method = "lm",
+             trControl = ctrl)
+fit
+
+predicted_values <- predict(fit, newdata = testing_data)
+
+
+rmse_electrons <- RMSE(testing_data$local_res_atom_non_h_electron_sum, predicted_values)
+r2_electrons <- R2(testing_data$local_res_atom_non_h_electron_sum, predicted_values)
+
+```
+
+###Wyznaczanie liczby atomów 
+
+```{r, message=FALSE, warning=FALSE, cache=TRUE}
+correlation <- cor(data_with_most_common_res_names %>% select_if(is.numeric), use="complete.obs", method="spearman")
+
+correlation <- gather(as.data.frame(correlation)['local_res_atom_non_h_count',], 'column', 'correlation_ratio') %>% 
+  filter(correlation_ratio > 0.8)
+
+atom_count_predict_data <- select(data_with_most_common_res_names, correlation$column)
+
+indexes <- createDataPartition(atom_count_predict_data$local_res_atom_non_h_count, p=0.7, list=F)
+
+training_data <- atom_count_predict_data[indexes,]
+testing_data <- atom_count_predict_data[-indexes,]
+
+
+ctrl <- trainControl(
+  method = "repeatedcv",
+  number = 2,
+  repeats = 5)
+
+fit <- train(local_res_atom_non_h_count ~ .,
+             data = training_data,
+             method = "lm",
+             trControl = ctrl)
+fit
+
+predicted_values <- predict(fit, newdata = testing_data)
+
+
+rmse_atoms <- RMSE(testing_data$local_res_atom_non_h_count, predicted_values)
+r2_atoms <- R2(testing_data$local_res_atom_non_h_count, predicted_values)
+```
+
+###Wyniki
+
+|Predykcja|RMSE|R^2|
+|---|---|---|---|---|
+|Ilości atomów|`r rmse_atoms`|`r r2_atoms`|
+|Ilości elektronów|`r rmse_electrons`|`r r2_electrons`|
+
+##Klasyfikacja 
+
+```{r}
+top_3_res_name <- get_top_n_res_names(cleaned_data, 3)
+
+res_name_classification_data <- data_with_most_common_res_names %>% filter(res_name %in% top_3_res_name$res_name)
+
+res_name_classification_data <- select(res_name_classification_data, (part_00_shape_segments_count:part_02_density_Z_4_0), (resolution:FoFc_max), res_name) %>% mutate(res_name=factor(res_name))
+
+
+indexes <- createDataPartition(res_name_classification_data$res_name,
+                           p=0.7, list=F)
+
+
+training_data <- res_name_classification_data[indexes,]
+testing_data <- res_name_classification_data[-indexes,]
+
+
+
+
+ctrl <- trainControl(
+  method = "repeatedcv",
+  number = 2,
+  repeats = 5)
+
+fit <- train(res_name ~ .,
+             data = training_data,
+             method = "rf",
+             preProc = c("center", "scale"),
+             trControl = ctrl,
+             ntree=5)
+fit
+
+predicted_classes <- predict(fit, newdata = testing_data)
+
+
+confusionMatrix(data = predicted_classes, testing_data$res_name)
+``` 
